@@ -1,10 +1,11 @@
-// Shoot Aim Academy - JavaScript functionality
+// P Point Shot Academy - JavaScript functionality
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all functionality
     initNavigation();
     initScrollEffects();
     initStatisticsCounter();
+    initHeroSlideshow();
     initGalleryFilters();
     initLightbox();
     initTestimonialCarousel();
@@ -26,6 +27,112 @@ document.addEventListener('DOMContentLoaded', function() {
         initAccessibility();
     }, 500);
 });
+
+// Hero slideshow functionality
+function initHeroSlideshow() {
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prev-slide');
+    const nextBtn = document.getElementById('next-slide');
+    let currentSlide = 0;
+    let autoSlideInterval;
+
+    if (slides.length === 0) return;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active');
+            if (i === index) {
+                slide.classList.add('active');
+            }
+        });
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+    }
+
+    function stopAutoSlide() {
+        if (autoSlideInterval) {
+            clearInterval(autoSlideInterval);
+        }
+    }
+
+    // Event listeners for manual controls
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            stopAutoSlide();
+            setTimeout(startAutoSlide, 10000); // Resume auto-slide after 10 seconds
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            stopAutoSlide();
+            setTimeout(startAutoSlide, 10000); // Resume auto-slide after 10 seconds
+        });
+    }
+
+    // Pause auto-slide on hover
+    const heroSection = document.querySelector('.hero');
+    if (heroSection) {
+        heroSection.addEventListener('mouseenter', stopAutoSlide);
+        heroSection.addEventListener('mouseleave', startAutoSlide);
+    }
+
+    // Touch/swipe support for mobile
+    if (heroSection && 'ontouchstart' in window) {
+        let startX = 0;
+        let endX = 0;
+
+        heroSection.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+            stopAutoSlide();
+        });
+
+        heroSection.addEventListener('touchend', function(e) {
+            endX = e.changedTouches[0].clientX;
+            const diffX = startX - endX;
+            
+            if (Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+            setTimeout(startAutoSlide, 10000);
+        });
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+            prevSlide();
+            stopAutoSlide();
+            setTimeout(startAutoSlide, 10000);
+        } else if (e.key === 'ArrowRight') {
+            nextSlide();
+            stopAutoSlide();
+            setTimeout(startAutoSlide, 10000);
+        }
+    });
+
+    // Initialize
+    showSlide(0);
+    startAutoSlide();
+}
 
 // Show all gallery items on page load
 function showAllGalleryItems() {
@@ -117,11 +224,11 @@ function initScrollEffects() {
             // Add/remove scrolled class for styling
             if (currentScrollY > 50) {
                 header.classList.add('scrolled');
-                header.style.background = 'rgba(19, 52, 59, 0.98)';
+                header.style.background = 'rgba(0, 0, 0, 0.98)';
                 header.style.backdropFilter = 'blur(15px)';
             } else {
                 header.classList.remove('scrolled');
-                header.style.background = 'rgba(19, 52, 59, 0.95)';
+                header.style.background = 'rgba(0, 0, 0, 0.95)';
                 header.style.backdropFilter = 'blur(10px)';
             }
 
@@ -531,7 +638,7 @@ function initRegistrationForm() {
             if (validateRegistrationForm(formObject)) {
                 // Show success message
                 showFormMessage(
-                    'Registration successful! Welcome to Shoot Aim Academy.\n\nWe will contact you within 24 hours to:\n• Confirm your enrollment\n• Schedule your first session\n• Provide payment details\n\nCheck your email for further information.',
+                    'Registration successful! Welcome to P Point Shot Academy.\n\nWe will contact you within 24 hours to:\n• Confirm your enrollment\n• Schedule your first session\n• Provide payment details\n\nCheck your email for further information.',
                     'success',
                     this
                 );
@@ -731,12 +838,12 @@ function initSmoothScrolling() {
     });
 }
 
-// WhatsApp integration - Fixed
+// WhatsApp integration - Updated for P Point Shot
 function initWhatsApp() {
     const whatsappBtn = document.querySelector('.whatsapp-float');
     if (whatsappBtn) {
         // Update the href to make it functional
-        const message = encodeURIComponent("Hello! I'm interested in learning more about shooting training at Shoot Aim Academy. Can you please provide me with details about your courses and pricing?");
+        const message = encodeURIComponent("Hello! I'm interested in learning more about sport shooting training at P Point Shot Academy. Can you please provide me with details about your courses and pricing?");
         whatsappBtn.href = `https://wa.me/919876543210?text=${message}`;
         
         whatsappBtn.addEventListener('click', function(e) {
@@ -786,7 +893,8 @@ function initPerformanceOptimizations() {
     // Preload critical images
     const criticalImages = [
         'https://pplx-res.cloudinary.com/image/upload/v1758965322/pplx_project_search_images/88f5508f28bdcd11c779af4ca29fb4fdd28c0761.png',
-        'https://pplx-res.cloudinary.com/image/upload/v1758974497/pplx_project_search_images/7a550ad78fa15581813107ee12f0efcf57c5e9c5.png'
+        'https://pplx-res.cloudinary.com/image/upload/v1758974497/pplx_project_search_images/7a550ad78fa15581813107ee12f0efcf57c5e9c5.png',
+        'https://pplx-res.cloudinary.com/image/upload/v1758974497/pplx_project_search_images/2ae5dbaf8931dcb4f093cabd073df3d006631c18.png'
     ];
     
     criticalImages.forEach(src => {
@@ -873,7 +981,7 @@ function initAccessibility() {
     skipLink.style.position = 'absolute';
     skipLink.style.top = '-40px';
     skipLink.style.left = '6px';
-    skipLink.style.background = 'var(--color-primary)';
+    skipLink.style.background = '#0066CC';
     skipLink.style.color = 'white';
     skipLink.style.padding = '8px';
     skipLink.style.textDecoration = 'none';
@@ -926,7 +1034,7 @@ function trackEvent(eventName, properties = {}) {
 }
 
 // Public API for external use
-window.ShootAimAcademy = {
+window.PPointShotAcademy = {
     // Gallery functions
     showGalleryFilter: function(filter) {
         const filterBtn = document.querySelector(`[data-filter="${filter}"]`);
@@ -955,6 +1063,17 @@ window.ShootAimAcademy = {
         }
     },
     
+    // Slideshow controls
+    nextSlide: function() {
+        const nextBtn = document.getElementById('next-slide');
+        if (nextBtn) nextBtn.click();
+    },
+    
+    prevSlide: function() {
+        const prevBtn = document.getElementById('prev-slide');
+        if (prevBtn) prevBtn.click();
+    },
+    
     // Form functions
     showContactForm: function() {
         this.scrollToSection('contact');
@@ -970,14 +1089,14 @@ window.ShootAimAcademy = {
 
 // Console welcome message
 console.log(
-    '%c🎯 Welcome to Shoot Aim Academy! 🇮🇳',
-    'color: #21808D; font-size: 16px; font-weight: bold;'
+    '%c🎯 Welcome to P Point Shot Academy! 🇮🇳',
+    'color: #0066CC; font-size: 16px; font-weight: bold;'
 );
 console.log(
-    '%cPrecision in Every Shot - India\'s Premier Shooting Training Academy',
-    'color: #FF9933; font-size: 12px;'
+    '%cFocus. Fire. Achieve - India\'s Premier Sport Shooting Training Academy',
+    'color: #000000; font-size: 12px;'
 );
 console.log(
-    '%cWebsite loaded successfully. All interactive features are ready!',
-    'color: #138808; font-size: 10px;'
+    '%cWebsite loaded successfully. All interactive features including slideshow are ready!',
+    'color: #0066CC; font-size: 10px;'
 );
